@@ -38,6 +38,18 @@ training set: AFLW dataset(positive), COCO dataset(negative)
 test set: FDDB dataset
 
 
+## Datasets
+
+### FDDB
+
+* http://vis-www.cs.umass.edu/fddb/
+* image: http://tamaraberg.com/faceDataset/originalPics.tar.gz
+* annotation: http://vis-www.cs.umass.edu/fddb/FDDB-folds.tgz
+* Readme: http://vis-www.cs.umass.edu/fddb/README.txt
+
+
+
+
 ## Result(gren: GT, blue: detected face)
 ![face](https://cloud.githubusercontent.com/assets/13601723/15349050/a8192776-1d0a-11e6-86be-243175c22ba4.png)
 
