@@ -40,6 +40,11 @@ test set: FDDB dataset
 
 ## Datasets
 
+### AFLW
+* https://www.tugraz.at/institute/icg/research/team-bischof/lrs/downloads/aflw/
+
+### COCO
+
 ### FDDB
 
 * http://vis-www.cs.umass.edu/fddb/
