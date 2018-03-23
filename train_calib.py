@@ -36,20 +36,20 @@ sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
 
-print "Training start!"
+print("Training start!")
 fp_loss = open("./result/" + folder_name + "/loss.txt", "w")
-data_id = range(len(train_db)) 
-for epoch in xrange(param.epoch_num):
+data_id = list(range(len(train_db))) 
+for epoch in range(param.epoch_num):
     
     loss = 0
     inputs = np.zeros((param.mini_batch,dim,dim,param.input_channel), np.float32)
     targets = np.zeros((param.mini_batch, param.cali_patt_num), np.float32)
     random.shuffle(data_id)
 
-    for it,bid in enumerate(xrange(0,len(train_db),param.mini_batch)):
+    for it,bid in enumerate(range(0,len(train_db),param.mini_batch)):
 
         if bid+param.mini_batch <= len(train_db):
-            for i in xrange(bid,bid+param.mini_batch):
+            for i in range(bid,bid+param.mini_batch):
                 did = data_id[i]
                 inputs[i-bid,:] = train_db[did][0]
                 targets[i-bid,:] = np.zeros((param.cali_patt_num),np.float32)
@@ -57,7 +57,7 @@ for epoch in xrange(param.epoch_num):
         else:
             inputs = np.zeros((len(train_db)-bid,dim,dim,param.input_channel), np.float32)
             targets = np.zeros((len(train_db)-bid,param.cali_patt_num), np.float32)
-            for i in xrange(bid,len(train_db)):
+            for i in range(bid,len(train_db)):
                 did = data_id[i]
                 inputs[i-bid,:] = train_db[did][0]
                 targets[i-bid,:] = np.zeros((param.cali_patt_num),np.float32)
@@ -67,7 +67,7 @@ for epoch in xrange(param.epoch_num):
         net.train_step.run(feed_dict = {input_node:inputs, target_node:targets})
 
         if it > 0 and it % 3000 == 0: 
-            print "epoch: " + str(epoch) + " iter: " + str(bid) + "/" + str(len(train_db)) + " loss: " + str(loss / it)
+            print("epoch: " + str(epoch) + " iter: " + str(bid) + "/" + str(len(train_db)) + " loss: " + str(loss / it))
 
     loss /= it
     fp_loss.write(str(loss)+"\n")
@@ -79,17 +79,17 @@ for epoch in xrange(param.epoch_num):
     test_score = 0
     test_inputs = np.zeros((param.mini_batch,dim,dim,param.input_channel), np.float32)
     test_targets = np.zeros((param.mini_batch, param.cali_patt_num), np.float32)
-    for bid in xrange(0,len(train_db),param.mini_batch):
+    for bid in range(0,len(train_db),param.mini_batch):
 
         if bid+param.mini_batch <= len(train_db):
-            for did in xrange(bid,bid+param.mini_batch):
+            for did in range(bid,bid+param.mini_batch):
                 test_inputs[did-bid,:] = train_db[did][0]
                 test_targets[did-bid,:] = np.zeros((param.cali_patt_num),np.float32)
                 test_targets[did-bid,train_db[did][1]] = 1
         else:
             test_inputs = np.zeros((len(train_db)-bid,dim,dim,param.input_channel), np.float32)
             test_targets = np.zeros((len(train_db)-bid, param.cali_patt_num), np.float32)
-            for did in xrange(bid,len(train_db)):
+            for did in range(bid,len(train_db)):
                 test_inputs[did-bid,:] = train_db[did][0]
                 test_targets[did-bid,:] = np.zeros((param.cali_patt_num),np.float32)
                 test_targets[did-bid,train_db[did][1]] = 1
@@ -98,8 +98,8 @@ for epoch in xrange(param.epoch_num):
         test_score += np.sum(np.argmax(output,1) == np.argmax(test_targets,1))
 
     test_score /= float(len(train_db))
-    print "Accuracy: ", test_score
-    print 
+    print("Accuracy: ", test_score)
+    print() 
 
 fp_loss.close()
     

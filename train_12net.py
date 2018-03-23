@@ -18,17 +18,17 @@ sess.run(tf.global_variables_initializer())
 inputs = np.zeros((param.mini_batch,param.img_size_12,param.img_size_12,param.input_channel), np.float32)
 targets = np.zeros((param.mini_batch, 1), np.float32)
 
-print "Training start!"
+print("Training start!")
 fp_loss = open("./result/12net/loss.txt", "w")
  
-for epoch in xrange(param.epoch_num):
+for epoch in range(param.epoch_num):
     
     loss = 0
     
-    for it in xrange(param.batch_iter):
+    for it in range(param.batch_iter):
 
-        pos_id = random.sample(xrange(len(pos_db_12)),param.pos_batch)
-        neg_id = random.sample(xrange(len(neg_db_12)),param.neg_batch)
+        pos_id = random.sample(range(len(pos_db_12)),param.pos_batch)
+        neg_id = random.sample(range(len(neg_db_12)),param.neg_batch)
 
         inputs[:param.pos_batch,:] = pos_db_12[pos_id,:]
         inputs[param.pos_batch:,:] = neg_db_12[neg_id,:]
@@ -39,7 +39,7 @@ for epoch in xrange(param.epoch_num):
         net_12.train_step.run(feed_dict = {input_12_node:inputs, target_12_node:targets})
 
         if it > 0 and it % 3000 == 0: 
-            print "epoch: " + str(epoch) + " iter: " + str(it) + "/" + str(param.batch_iter) + " loss: " + str(loss / it)
+            print("epoch: " + str(epoch) + " iter: " + str(it) + "/" + str(param.batch_iter) + " loss: " + str(loss / it))
 
     loss /= param.batch_iter 
     fp_loss.write(str(loss)+"\n")
@@ -49,7 +49,7 @@ for epoch in xrange(param.epoch_num):
 
     #test each epoch
     test_score = 0
-    for bid in xrange(0,len(pos_db_12),param.mini_batch):
+    for bid in range(0,len(pos_db_12),param.mini_batch):
 
         if bid+param.mini_batch <= len(pos_db_12):
             test_inputs = pos_db_12[bid:bid+param.mini_batch,:]
@@ -61,7 +61,7 @@ for epoch in xrange(param.epoch_num):
         output = net_12.prediction.eval(feed_dict = {input_12_node:test_inputs})
         test_score += np.sum(output > 0.5)
 
-    for bid in xrange(0,len(neg_db_12),param.mini_batch):
+    for bid in range(0,len(neg_db_12),param.mini_batch):
 
         if bid+param.mini_batch <= len(neg_db_12):
             test_inputs = neg_db_12[bid:bid+param.mini_batch,:param.dim_12]
@@ -74,8 +74,8 @@ for epoch in xrange(param.epoch_num):
         test_score += np.sum(output < 0.5)
 
     test_score /= float(len(pos_db_12)+len(neg_db_12))
-    print "Accuracy: ", test_score
-    print 
+    print("Accuracy: ", test_score)
+    print() 
 
 fp_loss.close()
     

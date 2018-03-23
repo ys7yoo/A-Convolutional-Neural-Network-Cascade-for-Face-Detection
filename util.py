@@ -65,7 +65,7 @@ def NMS(box):
     y_max = np.array([box[i][3] for i in range(len(box))],np.float32)
 
     area = (x_max-x_min)*(y_max-y_min)
-    idxs = np.array(range(len(box)))
+    idxs = np.array(list(range(len(box))))
 
     while len(idxs) > 0:
         i = idxs[0]
@@ -88,8 +88,8 @@ def NMS(box):
 def sliding_window(img, thr, net, input_12_node):
 
     pyramid = tuple(pyramid_gaussian(img, downscale = param.downscale))
-    detected_list = [0 for _ in xrange(len(pyramid))]
-    for scale in xrange(param.pyramid_num):
+    detected_list = [0 for _ in range(len(pyramid))]
+    for scale in range(param.pyramid_num):
         
         X = pyramid[scale]
 
@@ -149,6 +149,6 @@ def sliding_window(img, thr, net, input_12_node):
             detected_list[scale] = detected_list_scale 
             
     detected_list = [elem for elem in detected_list if type(elem) != int]
-    result_box = [detected_list[i][j] for i in xrange(len(detected_list)) for j in xrange(len(detected_list[i]))]
+    result_box = [detected_list[i][j] for i in range(len(detected_list)) for j in range(len(detected_list[i]))]
     
     return result_box

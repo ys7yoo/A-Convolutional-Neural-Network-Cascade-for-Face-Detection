@@ -173,5 +173,5 @@ for nid,img_name in enumerate(neg_file_list):
             neg_db = [0 for _ in range(1000)]
 
 
-    print "neg mining: " + str(nid) + "/" + str(len(neg_file_list)) + " db size: " + str(neg_db_sz)
+    print("neg mining: " + str(nid) + "/" + str(len(neg_file_list)) + " db size: " + str(neg_db_sz))
 

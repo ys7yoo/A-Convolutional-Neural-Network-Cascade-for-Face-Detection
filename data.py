@@ -9,16 +9,16 @@ import util
 
 def load_db_detect_train(dim):
     
-    print "Loading positive training db..."
+    print("Loading positive training db...")
 
     annot_dir = param.db_dir + "AFLW/aflw/data/"
     annot_fp = open(annot_dir + "annot", "r")
     raw_data = annot_fp.readlines()
 
     #pos image cropping
-    pos_db_12 = [0 for _ in xrange(len(raw_data))]
-    pos_db_24 = [0 for _ in xrange(len(raw_data))]
-    pos_db_48 = [0 for _ in xrange(len(raw_data))]
+    pos_db_12 = [0 for _ in range(len(raw_data))]
+    pos_db_24 = [0 for _ in range(len(raw_data))]
+    pos_db_48 = [0 for _ in range(len(raw_data))]
 
     for i,line in enumerate(raw_data):
         
@@ -90,13 +90,13 @@ def load_db_detect_train(dim):
     pos_db_12 = np.vstack(pos_db_12)
     pos_db_24 = np.vstack(pos_db_24) 
     pos_db_48 = np.vstack(pos_db_48) 
-    print "Loading negative training db..."
+    print("Loading negative training db...")
     if dim == param.img_size_12:
         
         #neg image cropping
         nid = 0
         neg_file_list = [f for f in os.listdir(param.neg_dir) if f.endswith(".jpg")]
-        neg_db_12 = [0 for n in xrange(len(neg_file_list))]
+        neg_db_12 = [0 for n in range(len(neg_file_list))]
 
         for filename in neg_file_list:
             
@@ -110,7 +110,7 @@ def load_db_detect_train(dim):
                 img = Image.fromarray(img)
 
             neg_db_line = np.zeros((param.neg_per_img,param.img_size_12,param.img_size_12,param.input_channel), np.float32)
-            for neg_iter in xrange(param.neg_per_img):
+            for neg_iter in range(param.neg_per_img):
                          
                 rad_rand = randint(0,min(img.size[0],img.size[1])-1)
                 while(rad_rand <= param.face_minimum):
@@ -184,14 +184,14 @@ def load_db_detect_train(dim):
     
 def load_db_calib_train(dim):
    
-    print "Loading calibration training db..."
+    print("Loading calibration training db...")
 
     annot_dir = param.db_dir + "AFLW/aflw/data/"
     annot_fp = open(annot_dir + "annot", "r")
     raw_data = annot_fp.readlines()
     
     #pos image cropping
-    x_db = [0 for _ in xrange(len(raw_data))]
+    x_db = [0 for _ in range(len(raw_data))]
     for i,line in enumerate(raw_data):
         
         parsed_line = line.split(',')
@@ -220,7 +220,7 @@ def load_db_calib_train(dim):
         if ymax >= img.size[1]:
             ymax = img.size[1]-1
         
-        x_db_list = [0 for _ in xrange(param.cali_patt_num)]
+        x_db_list = [0 for _ in range(param.cali_patt_num)]
 
         for si,s in enumerate(param.cali_scale):
             for xi,x in enumerate(param.cali_off_x):
@@ -254,23 +254,23 @@ def load_db_calib_train(dim):
             x_db[i] = x_db_list
 
     x_db = [elem for elem in x_db if type(elem) != int]    
-    x_db = [x_db[i][j] for i in xrange(len(x_db)) for j in xrange(len(x_db[i]))]
+    x_db = [x_db[i][j] for i in range(len(x_db)) for j in range(len(x_db[i]))]
     
     return x_db
 
 
 def load_db_test():
     
-    print "Loading test db..."
+    print("Loading test db...")
     
     annot_dir = param.test_dir + "FDDB-folds/"
     test_img_name = [0 for _ in range(param.fold_num)]
     test_annot = [0 for _ in range(param.fold_num)]
        
     
-    for fid in xrange(1,param.fold_num+1):
+    for fid in range(1,param.fold_num+1):
         
-        print fid, "/", 10, "folds is loading..."
+        print(fid, "/", 10, "folds is loading...")
         fold_img_name = []
         fold_annot = []
 
@@ -292,7 +292,7 @@ def load_db_test():
                 it = 0
                 
                 fold_img_name.append(file_name)
-                fold_annot_line = [0 for r in xrange(face_num)]
+                fold_annot_line = [0 for r in range(face_num)]
                 stage = 2
 
             elif stage == 2:

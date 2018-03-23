@@ -54,7 +54,7 @@ restorer_48_calib.restore(sess, param.model_dir + "48-calib-net.ckpt")
 
 iid = 0
 box_num = 0
-print "test start!"
+print("test start!")
 os.system("rm " + param.db_dir + "result/*.txt")
 for fid in range(param.fold_num):
 
@@ -64,7 +64,7 @@ for fid in range(param.fold_num):
 
     for tid,img_name in enumerate(fold_img_name):
         
-        print "test: " "fold " + str(fid+1) + "/" + str(param.fold_num) + " img " + str(tid) + "/" + str(len(fold_img_name))
+        print("test: " "fold " + str(fid+1) + "/" + str(param.fold_num) + " img " + str(tid) + "/" + str(len(fold_img_name)))
 
         img = Image.open(param.test_dir + img_name + ".jpg")
         
@@ -196,4 +196,4 @@ for fid in range(param.fold_num):
     fp_result.close()
 
 box_num /= float(iid)
-print "Avg # of box: ", str(box_num)
+print("Avg # of box: ", str(box_num))
