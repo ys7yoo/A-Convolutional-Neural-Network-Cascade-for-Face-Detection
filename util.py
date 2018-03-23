@@ -1,7 +1,11 @@
 import tensorflow as tf
 import numpy as np
 import math
-import Image
+
+import  PIL
+from PIL import Image
+#import Image
+
 from skimage.util.shape import view_as_windows
 from skimage.transform import pyramid_gaussian
 
