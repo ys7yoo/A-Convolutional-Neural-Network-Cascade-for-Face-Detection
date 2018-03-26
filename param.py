@@ -1,6 +1,6 @@
 
 #dir
-db_dir = "/media/sda1/Data/Face_detection/"
+db_dir = "/var/data/"
 pos_dir = db_dir + "AFLW/aflw/data/flickr/"
 neg_dir = db_dir + "neg_train/"
 test_dir = db_dir + "FDDB/"
