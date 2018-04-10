@@ -23,13 +23,15 @@ def load_db_detect_train(dim):
     for i,line in enumerate(raw_data):
         
         parsed_line = line.split(',')
+        print(parsed_line)
 
-        #filename = parsed_line[0][3:-1]
         filename = parsed_line[0]
         xmin = int(parsed_line[1])
         ymin = int(parsed_line[2])
         xmax = xmin + int(parsed_line[3])
-        ymax = ymin + int(parsed_line[4][:-2])
+        ymax = ymin + int(parsed_line[4])
+        #print((xmin, ymin, xmax, ymax))
+        #exit()
 
         img = Image.open(param.pos_dir+filename)
         
