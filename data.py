@@ -12,7 +12,7 @@ def load_db_detect_train(dim):
     print("Loading positive training db...")
 
     annot_dir = param.db_dir + "AFLW/aflw/data/"
-    annot_fp = open(annot_dir + "annot", "r")
+    annot_fp = open(annot_dir + "face_rect.txt", "r")
     raw_data = annot_fp.readlines()
 
     #pos image cropping
@@ -24,7 +24,8 @@ def load_db_detect_train(dim):
         
         parsed_line = line.split(',')
 
-        filename = parsed_line[0][3:-1]
+        #filename = parsed_line[0][3:-1]
+        filename = parsed_line[0]
         xmin = int(parsed_line[1])
         ymin = int(parsed_line[2])
         xmax = xmin + int(parsed_line[3])
