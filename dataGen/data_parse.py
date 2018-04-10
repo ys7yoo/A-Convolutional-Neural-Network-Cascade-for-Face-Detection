@@ -1,7 +1,7 @@
 import sqlite3
 
 db_dir = "/var/data/AFLW/aflw/data/aflw.sqlite"
-save_dir = "/var/data/AFLW/aflw/data/annot"
+save_dir = "/var/data/AFLW/aflw/data/face_rect.txt"
 
 con = sqlite3.connect(db_dir)
 cursor = con.cursor()
