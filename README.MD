@@ -2,6 +2,11 @@
 
 http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Li_A_Convolutional_Neural_2015_CVPR_paper.pdf
 
+
+## required packages
+```
+pip install pillow scikit-image 
+
 ## Start
 ### training classification net
 ```
