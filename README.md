@@ -44,6 +44,21 @@ training set: AFLW dataset(positive), COCO dataset(negative)
 test set: FDDB dataset
 
 
+*TO FILL MORE DETAIL*
+### Data
+(How dataset is loaded and prepared for further analysis)
+
+### Model
+(Details about the model and how it is implemented)
+
+### Train
+(Details about how to train the model)
+
+### Test
+(Details about how to test the model)
+
+
+
 ## Datasets
 
 ### AFLW
