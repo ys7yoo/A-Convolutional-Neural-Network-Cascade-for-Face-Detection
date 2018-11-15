@@ -213,12 +213,13 @@ def load_negative_training_db_48(neg_dir):
 
 def load_db_calib_train(dim):
    
-    print("Loading calibration training db...")
-
     annot_dir = param.db_dir + "AFLW/aflw/data/"
-    annot_fp = open(annot_dir + "annot", "r")
+    annot_filename = annot_dir + "annot"
+    annot_fp = open(annot_filename, "r")
     raw_data = annot_fp.readlines()
-    
+
+    print("Loading calibration training db: {} from {}".format(len(raw_data),annot_filename))
+
     #pos image cropping
     x_db = [0 for _ in range(len(raw_data))]
     for i,line in enumerate(raw_data):
