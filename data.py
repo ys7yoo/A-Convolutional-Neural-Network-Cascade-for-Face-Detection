@@ -23,7 +23,7 @@ def load_db_detect_train(dim):
     for i,line in enumerate(raw_data):
         
         parsed_line = line.split(',')
-        print(parsed_line)
+        #print(parsed_line)
 
         filename = parsed_line[0]
         xmin = int(parsed_line[1])
