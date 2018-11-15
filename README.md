@@ -12,6 +12,7 @@ pip install pillow scikit-image
 
 ### prepare folder for results
 ```
+mkdir result
 mkdir result/12net
 mkdir result/24net
 mkdir result/48net
