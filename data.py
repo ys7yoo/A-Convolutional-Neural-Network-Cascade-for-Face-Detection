@@ -11,7 +11,7 @@ def load_db_detect_train(dim):
     # load positive images
     annot_dir = param.db_dir + "AFLW/aflw/data/"
     #annot_filename = annot_dir + "face_rect.txt"
-    annot_filename = annot_dir + "face_rect10.txt" # only 10 images for debugging
+    annot_filename = annot_dir + "face_rect100.txt" # only 100 images for debugging
 
     pos_db_12, pos_db_24, pos_db_48 = load_positive_training_db(annot_filename)
 
