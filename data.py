@@ -8,185 +8,199 @@ import param
 import util
 
 def load_db_detect_train(dim):
-    
-
+    # load positive images
     annot_dir = param.db_dir + "AFLW/aflw/data/"
     #annot_fp = open(annot_dir + "face_rect.txt", "r")
     annot_fp = open(annot_dir + "face_rect10.txt", "r") # only 10 images for debugging
-    raw_data = annot_fp.readlines()
 
+    pos_db_12, pos_db_24, pos_db_48 = load_positive_training_db(annot_fp)
+
+
+    # load negative images
+    if dim == param.img_size_12:
+        return load_negative_training_db_12(pos_db_12, pos_db_24, pos_db_48)
+
+    elif dim == param.img_size_24:
+        return load_negative_training_db_24(pos_db_12, pos_db_24, pos_db_48)
+
+    elif dim == param.img_size_48:
+        return load_negative_training_db_48(pos_db_12, pos_db_24, pos_db_48)
+
+
+def load_positive_training_db(annot_fp):
+    raw_data = annot_fp.readlines()
     print("Loading positive training db ({})...".format(len(raw_data)))
 
-    #pos image cropping
+    # pos image cropping
     pos_db_12 = [0 for _ in range(len(raw_data))]
     pos_db_24 = [0 for _ in range(len(raw_data))]
     pos_db_48 = [0 for _ in range(len(raw_data))]
+    for i, line in enumerate(raw_data):
 
-    for i,line in enumerate(raw_data):
-        
         parsed_line = line.split(',')
-        #print(parsed_line)
+        # print(parsed_line)
 
         filename = parsed_line[0]
         xmin = int(parsed_line[1])
         ymin = int(parsed_line[2])
         xmax = xmin + int(parsed_line[3])
         ymax = ymin + int(parsed_line[4])
-        #print((xmin, ymin, xmax, ymax))
-        #exit()
+        # print((xmin, ymin, xmax, ymax))
+        # exit()
 
-        img = Image.open(param.pos_dir+filename)
-        
-        #for debugging
-        #img.save(str(i)  + ".jpg")
-        
-        #truncated image(error)
+        img = Image.open(param.pos_dir + filename)
+
+        # for debugging
+        # img.save(str(i)  + ".jpg")
+
+        # truncated image(error)
         if i == 8160 or i == 14884 or i == 14886:
             continue
 
-        #check if gray
+        # check if gray
         if len(np.shape(img)) != param.input_channel:
             img = np.asarray(img)
-            img = np.reshape(img,(np.shape(img)[0],np.shape(img)[1],1))
-            img = np.concatenate((img,img,img),axis=2)
+            img = np.reshape(img, (np.shape(img)[0], np.shape(img)[1], 1))
+            img = np.concatenate((img, img, img), axis=2)
             img = Image.fromarray(img)
 
-        pos_db_line_12 = np.zeros((2,param.img_size_12,param.img_size_12,param.input_channel), np.float32)
-        pos_db_line_24 = np.zeros((2,param.img_size_24,param.img_size_24,param.input_channel), np.float32)
-        pos_db_line_48 = np.zeros((2,param.img_size_48,param.img_size_48,param.input_channel), np.float32)
+        pos_db_line_12 = np.zeros((2, param.img_size_12, param.img_size_12, param.input_channel), np.float32)
+        pos_db_line_24 = np.zeros((2, param.img_size_24, param.img_size_24, param.input_channel), np.float32)
+        pos_db_line_48 = np.zeros((2, param.img_size_48, param.img_size_48, param.input_channel), np.float32)
 
         if xmax >= img.size[0]:
-            xmax = img.size[0]-1
+            xmax = img.size[0] - 1
         if ymax >= img.size[1]:
-            ymax = img.size[1]-1
-        
+            ymax = img.size[1] - 1
+
         cropped_img = img.crop((xmin, ymin, xmax, ymax))
         flipped_img = cropped_img.transpose(Image.FLIP_LEFT_RIGHT)
 
-        cropped_arr_12 = util.img2array(cropped_img,param.img_size_12)
-        flipped_arr_12 = util.img2array(flipped_img,param.img_size_12)
-        cropped_arr_24 = util.img2array(cropped_img,param.img_size_24)
-        flipped_arr_24 = util.img2array(flipped_img,param.img_size_24)
-        cropped_arr_48 = util.img2array(cropped_img,param.img_size_48)
-        flipped_arr_48 = util.img2array(flipped_img,param.img_size_48)
-        
-        #for debugging
-        #cropped_img.save(param.pos_dir + str(i)  + ".jpg")
-        
-        pos_db_line_12[0,:] = cropped_arr_12
-        pos_db_line_24[0,:] = cropped_arr_24
-        pos_db_line_48[0,:] = cropped_arr_48
-        
-        
-        pos_db_line_12[1,:] = flipped_arr_12
-        pos_db_line_24[1,:] = flipped_arr_24
-        pos_db_line_48[1,:] = flipped_arr_48
-        
+        cropped_arr_12 = util.img2array(cropped_img, param.img_size_12)
+        flipped_arr_12 = util.img2array(flipped_img, param.img_size_12)
+        cropped_arr_24 = util.img2array(cropped_img, param.img_size_24)
+        flipped_arr_24 = util.img2array(flipped_img, param.img_size_24)
+        cropped_arr_48 = util.img2array(cropped_img, param.img_size_48)
+        flipped_arr_48 = util.img2array(flipped_img, param.img_size_48)
+
+        # for debugging
+        # cropped_img.save(param.pos_dir + str(i)  + ".jpg")
+
+        pos_db_line_12[0, :] = cropped_arr_12
+        pos_db_line_24[0, :] = cropped_arr_24
+        pos_db_line_48[0, :] = cropped_arr_48
+
+        pos_db_line_12[1, :] = flipped_arr_12
+        pos_db_line_24[1, :] = flipped_arr_24
+        pos_db_line_48[1, :] = flipped_arr_48
+
         pos_db_12[i] = pos_db_line_12
         pos_db_24[i] = pos_db_line_24
         pos_db_48[i] = pos_db_line_48
 
         img.close()
 
-    pos_db_12 = [elem for elem in pos_db_12 if type(elem) != int]   
+    pos_db_12 = [elem for elem in pos_db_12 if type(elem) != int]
     pos_db_24 = [elem for elem in pos_db_24 if type(elem) != int]
     pos_db_48 = [elem for elem in pos_db_48 if type(elem) != int]
-
     pos_db_12 = np.vstack(pos_db_12)
-    pos_db_24 = np.vstack(pos_db_24) 
-    pos_db_48 = np.vstack(pos_db_48) 
-    print("Loading negative training db...")
-    if dim == param.img_size_12:
-        
-        #neg image cropping
-        nid = 0
-        neg_file_list = [f for f in os.listdir(param.neg_dir) if f.endswith(".jpg")]
-        neg_db_12 = [0 for n in range(len(neg_file_list))]
+    pos_db_24 = np.vstack(pos_db_24)
+    pos_db_48 = np.vstack(pos_db_48)
 
-        for filename in neg_file_list:
-            
-            img = Image.open(param.neg_dir + filename)
-            
-            #check if gray
-            if len(np.shape(np.asarray(img))) != param.input_channel:
-                img = np.asarray(img)
-                img = np.reshape(img,(np.shape(img)[0],np.shape(img)[1],1))
-                img = np.concatenate((img,img,img),axis=2)
-                img = Image.fromarray(img)
-
-            neg_db_line = np.zeros((param.neg_per_img,param.img_size_12,param.img_size_12,param.input_channel), np.float32)
-            for neg_iter in range(param.neg_per_img):
-                         
-                rad_rand = randint(0,min(img.size[0],img.size[1])-1)
-                while(rad_rand <= param.face_minimum):
-                    rad_rand = randint(0,min(img.size[0],img.size[1])-1)
-                
-                x_rand = randint(0, img.size[0] - rad_rand - 1)
-                y_rand = randint(0, img.size[1] - rad_rand - 1)
-                
-                neg_cropped_img = img.crop((x_rand, y_rand, x_rand + rad_rand, y_rand + rad_rand))
-                neg_cropped_arr = util.img2array(neg_cropped_img,param.img_size_12)
-                
-                #for debugging
-                #neg_cropped_img.save(param.neg_dir + str(fid) + "_" + str(r) + ".jpg")
-                       
-                neg_db_line[neg_iter,:] = neg_cropped_arr
-            
-            neg_db_12[nid] = neg_db_line
-            nid += 1
-       
-        neg_db_12 = [elem for elem in neg_db_12 if type(elem) != int]
-        neg_db_12 = np.vstack(neg_db_12)
-        return [pos_db_12,pos_db_24,pos_db_48], neg_db_12
-
-    elif dim == param.img_size_24:
-        
-        neg_db_12 = np.empty((0,param.img_size_12,param.img_size_12,param.input_channel),np.float32)
-        neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/24/") if f.startswith("12_") and f.endswith(".npy")]
-        for nid,db_name in enumerate(neg_file_list):
-
-            tmp = np.load(param.neg_dir + "neg_hard/24/" + db_name)
-            neg_db_12 = np.concatenate((neg_db_12,tmp),axis=0)
+    return pos_db_12, pos_db_24, pos_db_48
 
 
-        neg_db_24 = np.empty((0,param.img_size_24,param.img_size_24,param.input_channel),np.float32)
-        neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/24/") if f.startswith("24_") and f.endswith(".npy")]
-        for nid,db_name in enumerate(neg_file_list):
+def load_negative_training_db_12(pos_db_12, pos_db_24, pos_db_48):
+    # neg image cropping
+    nid = 0
+    neg_file_list = [f for f in os.listdir(param.neg_dir) if f.endswith(".jpg")]
+    print("Loading negative training db ({})".format(len(neg_file_list)))
 
-            tmp = np.load(param.neg_dir + "neg_hard/24/" + db_name)
-            neg_db_24 = np.concatenate((neg_db_24,tmp),axis=0)
+    neg_db_12 = [0 for n in range(len(neg_file_list))]
+    for filename in neg_file_list:
 
-        return [pos_db_12,pos_db_24,pos_db_48], neg_db_12, neg_db_24
-    
-    elif dim == param.img_size_48:
-        
-        neg_db_12 = np.empty((0,param.img_size_12,param.img_size_12,param.input_channel),np.float32)
-        neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/48/") if f.startswith("12_") and f.endswith(".npy")]
-        for nid,db_name in enumerate(neg_file_list):
+        img = Image.open(param.neg_dir + filename)
 
-            tmp = np.load(param.neg_dir + "neg_hard/48/" + db_name)
-            neg_db_12 = np.concatenate((neg_db_12,tmp),axis=0)
+        # check if gray
+        if len(np.shape(np.asarray(img))) != param.input_channel:
+            img = np.asarray(img)
+            img = np.reshape(img, (np.shape(img)[0], np.shape(img)[1], 1))
+            img = np.concatenate((img, img, img), axis=2)
+            img = Image.fromarray(img)
+
+        neg_db_line = np.zeros((param.neg_per_img, param.img_size_12, param.img_size_12, param.input_channel),
+                               np.float32)
+        for neg_iter in range(param.neg_per_img):
+
+            rad_rand = randint(0, min(img.size[0], img.size[1]) - 1)
+            while (rad_rand <= param.face_minimum):
+                rad_rand = randint(0, min(img.size[0], img.size[1]) - 1)
+
+            x_rand = randint(0, img.size[0] - rad_rand - 1)
+            y_rand = randint(0, img.size[1] - rad_rand - 1)
+
+            neg_cropped_img = img.crop((x_rand, y_rand, x_rand + rad_rand, y_rand + rad_rand))
+            neg_cropped_arr = util.img2array(neg_cropped_img, param.img_size_12)
+
+            # for debugging
+            # neg_cropped_img.save(param.neg_dir + str(fid) + "_" + str(r) + ".jpg")
+
+            neg_db_line[neg_iter, :] = neg_cropped_arr
+
+        neg_db_12[nid] = neg_db_line
+        nid += 1
+
+    neg_db_12 = [elem for elem in neg_db_12 if type(elem) != int]
+    neg_db_12 = np.vstack(neg_db_12)
+
+    return [pos_db_12, pos_db_24, pos_db_48], neg_db_12
 
 
-        neg_db_24 = np.empty((0,param.img_size_24,param.img_size_24,param.input_channel),np.float32)
-        neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/48/") if f.startswith("24_") and f.endswith(".npy")]
-        for nid,db_name in enumerate(neg_file_list):
+def load_negative_training_db_24(pos_db_12, pos_db_24, pos_db_48):
+    neg_db_12 = np.empty((0, param.img_size_12, param.img_size_12, param.input_channel), np.float32)
+    neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/24/") if
+                     f.startswith("12_") and f.endswith(".npy")]
+    print("Loading negative training db ({})".format(len(neg_file_list)))
 
-            tmp = np.load(param.neg_dir + "neg_hard/48/" + db_name)
-            neg_db_24 = np.concatenate((neg_db_24,tmp),axis=0)
+    for nid, db_name in enumerate(neg_file_list):
+        tmp = np.load(param.neg_dir + "neg_hard/24/" + db_name)
+        neg_db_12 = np.concatenate((neg_db_12, tmp), axis=0)
+    neg_db_24 = np.empty((0, param.img_size_24, param.img_size_24, param.input_channel), np.float32)
 
-        
-        neg_db_48 = np.empty((0,param.img_size_48,param.img_size_48,param.input_channel),np.float32)
-        neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/48/") if f.startswith("48_") and f.endswith(".npy")]
-        for nid,db_name in enumerate(neg_file_list):
+    neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/24/") if
+                     f.startswith("24_") and f.endswith(".npy")]
+    for nid, db_name in enumerate(neg_file_list):
+        tmp = np.load(param.neg_dir + "neg_hard/24/" + db_name)
+        neg_db_24 = np.concatenate((neg_db_24, tmp), axis=0)
 
-            tmp = np.load(param.neg_dir + "neg_hard/48/" + db_name)
-            neg_db_48 = np.concatenate((neg_db_48,tmp),axis=0)
+    return [pos_db_12, pos_db_24, pos_db_48], neg_db_12, neg_db_24
 
-        return [pos_db_12,pos_db_24,pos_db_48], neg_db_12, neg_db_24, neg_db_48
+def load_negative_training_db_48(pos_db_12, pos_db_24, pos_db_48):
+    neg_db_12 = np.empty((0, param.img_size_12, param.img_size_12, param.input_channel), np.float32)
+    neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/48/") if
+                     f.startswith("12_") and f.endswith(".npy")]
+    print("Loading negative training db ({})".format(len(neg_file_list)))
 
-     
-    
+    for nid, db_name in enumerate(neg_file_list):
+        tmp = np.load(param.neg_dir + "neg_hard/48/" + db_name)
+        neg_db_12 = np.concatenate((neg_db_12, tmp), axis=0)
+    neg_db_24 = np.empty((0, param.img_size_24, param.img_size_24, param.input_channel), np.float32)
+
+    neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/48/") if
+                     f.startswith("24_") and f.endswith(".npy")]
+    for nid, db_name in enumerate(neg_file_list):
+        tmp = np.load(param.neg_dir + "neg_hard/48/" + db_name)
+        neg_db_24 = np.concatenate((neg_db_24, tmp), axis=0)
+    neg_db_48 = np.empty((0, param.img_size_48, param.img_size_48, param.input_channel), np.float32)
+
+    neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/48/") if
+                     f.startswith("48_") and f.endswith(".npy")]
+    for nid, db_name in enumerate(neg_file_list):
+        tmp = np.load(param.neg_dir + "neg_hard/48/" + db_name)
+        neg_db_48 = np.concatenate((neg_db_48, tmp), axis=0)
+
+    return [pos_db_12, pos_db_24, pos_db_48], neg_db_12, neg_db_24, neg_db_48
+
 def load_db_calib_train(dim):
    
     print("Loading calibration training db...")
