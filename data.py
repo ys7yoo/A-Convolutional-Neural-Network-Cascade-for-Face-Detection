@@ -9,11 +9,13 @@ import util
 
 def load_db_detect_train(dim):
     
-    print("Loading positive training db...")
 
     annot_dir = param.db_dir + "AFLW/aflw/data/"
-    annot_fp = open(annot_dir + "face_rect.txt", "r")
+    #annot_fp = open(annot_dir + "face_rect.txt", "r")
+    annot_fp = open(annot_dir + "face_rect10.txt", "r") # only 10 images for debugging
     raw_data = annot_fp.readlines()
+
+    print("Loading positive training db ({})...".format(len(raw_data)))
 
     #pos image cropping
     pos_db_12 = [0 for _ in range(len(raw_data))]
