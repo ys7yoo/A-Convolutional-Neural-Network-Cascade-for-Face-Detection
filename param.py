@@ -6,7 +6,8 @@ pos_dir = db_dir + "AFLW/aflw/data/flickr/"
 neg_dir = db_dir + "INRIA/"
 test_dir = db_dir + "FDDB/"
 fig_dir = db_dir + "result/fig/"
-model_dir = db_dir + "result/model/"
+#model_dir = db_dir + "result/model/"
+model_dir = "result/model/"
 
 #db parameters
 input_channel = 3
