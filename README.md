@@ -9,6 +9,15 @@ pip install pillow scikit-image
 ```
 
 ## Start
+
+### prepare folder for results
+```
+mkdir result/12net
+mkdir result/24net
+mkdir result/48net
+```
+
+
 ### training classification net
 ```
 12-net: python train_12net.py
