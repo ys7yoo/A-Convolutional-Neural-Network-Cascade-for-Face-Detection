@@ -19,13 +19,19 @@ def load_db_detect_train(dim):
     # load negative images
     if dim == param.img_size_12:
         neg_db_12= load_negative_training_db_12(param.neg_dir)
+
         return [pos_db_12, pos_db_24, pos_db_48], neg_db_12
 
     elif dim == param.img_size_24:
-        return load_negative_training_db_24(pos_db_12, pos_db_24, pos_db_48)
+        neg_db_12, neg_db_24 =  load_negative_training_db_24(param.neg_dir)
+
+        return [pos_db_12, pos_db_24, pos_db_48], neg_db_12, neg_db_24
 
     elif dim == param.img_size_48:
-        return load_negative_training_db_48(pos_db_12, pos_db_24, pos_db_48)
+        neg_db_12, neg_db_24, neg_db_48 = load_negative_training_db_48(param.neg_dir)
+
+        return [pos_db_12, pos_db_24, pos_db_48], neg_db_12, neg_db_24, neg_db_48
+
 
 
 def load_positive_training_db(annot_filename):
@@ -160,9 +166,9 @@ def load_negative_training_db_12(neg_dir):
     return neg_db_12
 
 
-def load_negative_training_db_24(pos_db_12, pos_db_24, pos_db_48):
+def load_negative_training_db_24(neg_dir):
     neg_db_12 = np.empty((0, param.img_size_12, param.img_size_12, param.input_channel), np.float32)
-    neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/24/") if
+    neg_file_list = [f for f in os.listdir(neg_dir + "neg_hard/24/") if
                      f.startswith("12_") and f.endswith(".npy")]
     print("Loading negative training db ({})".format(len(neg_file_list)))
 
@@ -171,17 +177,17 @@ def load_negative_training_db_24(pos_db_12, pos_db_24, pos_db_48):
         neg_db_12 = np.concatenate((neg_db_12, tmp), axis=0)
     neg_db_24 = np.empty((0, param.img_size_24, param.img_size_24, param.input_channel), np.float32)
 
-    neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/24/") if
+    neg_file_list = [f for f in os.listdir(neg_dir + "neg_hard/24/") if
                      f.startswith("24_") and f.endswith(".npy")]
     for nid, db_name in enumerate(neg_file_list):
         tmp = np.load(param.neg_dir + "neg_hard/24/" + db_name)
         neg_db_24 = np.concatenate((neg_db_24, tmp), axis=0)
 
-    return [pos_db_12, pos_db_24, pos_db_48], neg_db_12, neg_db_24
+    return neg_db_12, neg_db_24
 
-def load_negative_training_db_48(pos_db_12, pos_db_24, pos_db_48):
+def load_negative_training_db_48(neg_dir):
     neg_db_12 = np.empty((0, param.img_size_12, param.img_size_12, param.input_channel), np.float32)
-    neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/48/") if
+    neg_file_list = [f for f in os.listdir(neg_dir + "neg_hard/48/") if
                      f.startswith("12_") and f.endswith(".npy")]
     print("Loading negative training db ({})".format(len(neg_file_list)))
 
@@ -190,20 +196,20 @@ def load_negative_training_db_48(pos_db_12, pos_db_24, pos_db_48):
         neg_db_12 = np.concatenate((neg_db_12, tmp), axis=0)
     neg_db_24 = np.empty((0, param.img_size_24, param.img_size_24, param.input_channel), np.float32)
 
-    neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/48/") if
+    neg_file_list = [f for f in os.listdir(neg_dir + "neg_hard/48/") if
                      f.startswith("24_") and f.endswith(".npy")]
     for nid, db_name in enumerate(neg_file_list):
         tmp = np.load(param.neg_dir + "neg_hard/48/" + db_name)
         neg_db_24 = np.concatenate((neg_db_24, tmp), axis=0)
     neg_db_48 = np.empty((0, param.img_size_48, param.img_size_48, param.input_channel), np.float32)
 
-    neg_file_list = [f for f in os.listdir(param.neg_dir + "neg_hard/48/") if
+    neg_file_list = [f for f in os.listdir(neg_dir + "neg_hard/48/") if
                      f.startswith("48_") and f.endswith(".npy")]
     for nid, db_name in enumerate(neg_file_list):
         tmp = np.load(param.neg_dir + "neg_hard/48/" + db_name)
         neg_db_48 = np.concatenate((neg_db_48, tmp), axis=0)
 
-    return [pos_db_12, pos_db_24, pos_db_48], neg_db_12, neg_db_24, neg_db_48
+    return neg_db_12, neg_db_24, neg_db_48
 
 def load_db_calib_train(dim):
    
