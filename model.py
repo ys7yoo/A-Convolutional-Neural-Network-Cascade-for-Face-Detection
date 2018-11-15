@@ -41,10 +41,10 @@ class detect_12Net:
             self.b_conv3 = bias_variable([1],"b3")
             self.h_conv3 = tf.nn.sigmoid(conv2d(self.h_conv2, self.w_conv3, 1) + self.b_conv3)
 
-            self.conv2_shape = tf.concat(0,[[-1],[tf.reduce_prod(tf.slice(tf.shape(self.h_conv2),[1],[3]),0)]])
+            self.conv2_shape = tf.concat([[-1],[tf.reduce_prod(tf.slice(tf.shape(self.h_conv2),[1],[3]),0)]],0)
             self.h_conv2_reshaped = tf.reshape(self.h_conv2,self.conv2_shape)
 
-            self.conv3_shape = tf.concat(0,[[-1],[tf.reduce_prod(tf.slice(tf.shape(self.h_conv3),[1],[3]),0)]])
+            self.conv3_shape = tf.concat([[-1],[tf.reduce_prod(tf.slice(tf.shape(self.h_conv3),[1],[3]),0)]],0)
             self.h_conv3_reshaped = tf.reshape(self.h_conv3,self.conv3_shape)
         
         self.from_12 = self.h_conv2_reshaped
@@ -77,7 +77,7 @@ class detect_24Net:
             #fc layer2
             self.w_fc2 =  weight_variable([128+16, 1],"w3")
             self.b_fc2 =  bias_variable([1],"b3")
-            self.h_fc1_concat = tf.concat(1,[self.h_fc1,from_12])
+            self.h_fc1_concat = tf.concat([self.h_fc1,from_12],1)
             self.h_fc2 = tf.nn.sigmoid(tf.matmul(self.h_fc1_concat, self.w_fc2) + self.b_fc2)
        
         self.from_24 = self.h_fc1_concat
@@ -117,7 +117,7 @@ class detect_48Net:
             #fc layer2
             self.w_fc2 =  weight_variable([256+128+16, 1],"w4")
             self.b_fc2 =  bias_variable([1],"b4")
-            self.h_fc1_concat = tf.concat(1,[self.h_fc1,from_24])
+            self.h_fc1_concat = tf.concat([self.h_fc1,from_24],1)
             self.h_fc2 = tf.nn.sigmoid(tf.matmul(self.h_fc1_concat, self.w_fc2) + self.b_fc2)
        
         self.prediction = self.h_fc2
