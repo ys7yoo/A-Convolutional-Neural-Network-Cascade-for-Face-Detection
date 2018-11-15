@@ -10,15 +10,16 @@ import util
 def load_db_detect_train(dim):
     # load positive images
     annot_dir = param.db_dir + "AFLW/aflw/data/"
-    #annot_fp = open(annot_dir + "face_rect.txt", "r")
-    annot_fp = open(annot_dir + "face_rect10.txt", "r") # only 10 images for debugging
+    #annot_filename = annot_dir + "face_rect.txt"
+    annot_filename = annot_dir + "face_rect10.txt" # only 10 images for debugging
 
-    pos_db_12, pos_db_24, pos_db_48 = load_positive_training_db(annot_fp)
+    pos_db_12, pos_db_24, pos_db_48 = load_positive_training_db(annot_filename)
 
 
     # load negative images
     if dim == param.img_size_12:
-        return load_negative_training_db_12(pos_db_12, pos_db_24, pos_db_48)
+        neg_db_12= load_negative_training_db_12(param.neg_dir)
+        return [pos_db_12, pos_db_24, pos_db_48], neg_db_12
 
     elif dim == param.img_size_24:
         return load_negative_training_db_24(pos_db_12, pos_db_24, pos_db_48)
@@ -27,9 +28,12 @@ def load_db_detect_train(dim):
         return load_negative_training_db_48(pos_db_12, pos_db_24, pos_db_48)
 
 
-def load_positive_training_db(annot_fp):
+def load_positive_training_db(annot_filename):
+
+    annot_fp = open(annot_filename, "r") 
     raw_data = annot_fp.readlines()
-    print("Loading positive training db ({})...".format(len(raw_data)))
+
+    print("Loading positive training db: {} images from {}".format(len(raw_data),annot_filename))
 
     # pos image cropping
     pos_db_12 = [0 for _ in range(len(raw_data))]
@@ -110,11 +114,11 @@ def load_positive_training_db(annot_fp):
     return pos_db_12, pos_db_24, pos_db_48
 
 
-def load_negative_training_db_12(pos_db_12, pos_db_24, pos_db_48):
+def load_negative_training_db_12(neg_dir):
     # neg image cropping
     nid = 0
-    neg_file_list = [f for f in os.listdir(param.neg_dir) if f.endswith(".jpg")]
-    print("Loading negative training db ({})".format(len(neg_file_list)))
+    neg_file_list = [f for f in os.listdir(neg_dir) if f.endswith(".jpg")]
+    print("Loading negative training db: {} images from {}".format(len(neg_file_list),neg_dir))
 
     neg_db_12 = [0 for n in range(len(neg_file_list))]
     for filename in neg_file_list:
@@ -153,7 +157,7 @@ def load_negative_training_db_12(pos_db_12, pos_db_24, pos_db_48):
     neg_db_12 = [elem for elem in neg_db_12 if type(elem) != int]
     neg_db_12 = np.vstack(neg_db_12)
 
-    return [pos_db_12, pos_db_24, pos_db_48], neg_db_12
+    return neg_db_12
 
 
 def load_negative_training_db_24(pos_db_12, pos_db_24, pos_db_48):

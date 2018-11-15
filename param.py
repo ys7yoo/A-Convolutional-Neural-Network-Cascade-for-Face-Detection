@@ -2,7 +2,8 @@
 #dir
 db_dir = "/var/data/"
 pos_dir = db_dir + "AFLW/aflw/data/flickr/"
-neg_dir = db_dir + "neg_train/"
+#neg_dir = db_dir + "neg_train/"
+neg_dir = db_dir + "INRIA/"
 test_dir = db_dir + "FDDB/"
 fig_dir = db_dir + "result/fig/"
 model_dir = db_dir + "result/model/"
