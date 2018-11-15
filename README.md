@@ -14,8 +14,11 @@ pip install pillow scikit-image
 ```
 mkdir result
 mkdir result/12net
+mkdir result/12calib
 mkdir result/24net
+mkdir result/24calib
 mkdir result/48net
+mkdir result/48calib
 mkdir result/model
 ```
 
